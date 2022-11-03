@@ -1,0 +1,16 @@
+{
+  "name": "cosma",
+  "version": "0.1.0",
+  "description": "Vehicle reservation integration slack-ation",
+  "scripts": {
+    "backend:dev": "npm run start:dev --prefix backend",
+    "client:dev": "DANGEROUSLY_DISABLE_HOST_CHECK=true npm run start --prefix frontend",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run client:dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.4.0"
+  },
+  "dependencies": {
+    "@nestjs/config": "^2.2.0"
+  }
+}
