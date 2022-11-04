@@ -19,7 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 const createUser = (data) => {
   delete data?.confirmPassword;
 
-  fetch("/api/v1/users", {
+  fetch("/api/users", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
