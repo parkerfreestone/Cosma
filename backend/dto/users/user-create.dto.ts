@@ -14,6 +14,5 @@ export class UserCreationDto {
   @IsString()
   password: string;
 
-  @IsString()
   bio: string;
 }

@@ -14,15 +14,14 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
     TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.registerAsync({
-      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         secret: config.get('JWT_SECRET'),
         signOptions: { expiresIn: '1h' },
       }),
-      inject: [ConfigService],
     }),
   ],
-  controllers: [UsersController],
   providers: [UsersService, LocalStrategy, JwtStrategy],
+  controllers: [UsersController],
 })
 export class UsersModule {}

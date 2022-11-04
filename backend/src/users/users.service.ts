@@ -27,7 +27,7 @@ export class UsersService {
 
   async create(userCreationDto: UserCreationDto) {
     if (!(await this.findOne({ username: userCreationDto.username }))) {
-      const salt = await bcrypt.getSalt();
+      const salt = await bcrypt.genSalt();
       const hash = await bcrypt.hash(userCreationDto.password, salt);
 
       userCreationDto.username = userCreationDto.username.toLowerCase();

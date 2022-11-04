@@ -32,7 +32,6 @@ export class UsersController {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   async createUser(@Body() userCreationDto: UserCreationDto): Promise<User> {
     const user = await this.usersService.create(userCreationDto);
