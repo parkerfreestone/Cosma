@@ -17,7 +17,7 @@ import { AppService } from './app.service';
         type: 'postgres',
         url:
           config.get('DATABASE_URL') ||
-          'postgresql://postgres:parker@localhost:5432/cosma',
+          'postgresql://parkerfreestone:parkerfreestone@localhost:5432/cosma',
         synchronize: true,
         entities: ['dist/src/entities/**/*.js'],
         autoLoadEntities: true,

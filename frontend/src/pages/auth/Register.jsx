@@ -7,7 +7,6 @@ import {
   Center,
   Divider,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
@@ -42,9 +41,9 @@ export const Register = () => {
 
   const navigate = useNavigate();
 
-  const { mutate, isLoading } = useMutation(createUser, {
+  const { mutate } = useMutation(createUser, {
     onSuccess: () => {
-      navigate("/");
+      navigate("/login");
     },
     onError: (err) => {
       setErrorMessage(err.response.data.message);

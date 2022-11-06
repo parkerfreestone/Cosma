@@ -8,7 +8,8 @@
     "dev": "concurrently \"npm run backend:dev\" \"npm run client:dev\""
   },
   "devDependencies": {
-    "concurrently": "^7.4.0"
+    "concurrently": "^7.4.0",
+    "prettier": "2.7.1"
   },
   "dependencies": {
     "@nestjs/config": "^2.2.0"

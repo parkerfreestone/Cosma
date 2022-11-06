@@ -25,6 +25,19 @@ export class UsersController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/logout')
+  async logout(@Res({passthrough: true}) res: any) {
+    res.clearCookie('jwt');
+    return { message: 'User Successfully Logged out.' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  getProfile(@Req() req: any) {
+    return { username: req.user.username, id: req.user.sub };
+  }
+
   @Get(':id')
   async getUser(@Param('id') id: number) {
     const user = await this.usersService.findOne({ id });
@@ -40,7 +53,7 @@ export class UsersController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Get('login')
+  @Post('login')
   async login(@Res({ passthrough: true }) res: any, @Req() req: any) {
     const oneHour = 60 * 60 * 1000;
 
@@ -56,11 +69,5 @@ export class UsersController {
       id: req.user.id,
       expiration: new Date(new Date().getTime() + oneHour),
     };
-  }
-
-  @Get('logout')
-  async logout(@Res({ passthrough: true }) res: any) {
-    res.clearCookie('jwt');
-    return { message: 'User Successfully Logged out.' };
   }
 }

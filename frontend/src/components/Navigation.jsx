@@ -25,6 +25,8 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../context/UserContext";
+import axios from "axios";
 
 const menuItems = [
   {
@@ -34,7 +36,7 @@ const menuItems = [
   },
   {
     name: "New Post",
-    route: "/new-post",
+    route: "/post",
     icon: <PlusSquare />,
   },
   {
@@ -46,17 +48,16 @@ const menuItems = [
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
+  const { signedIn, setSignedIn, setUserId, setSessionOver } = useAuthContext();
 
-  const handleLogIn = () => {
-    setSignedIn(true);
-    console.log("Logged in!");
-  };
-
-  const handleLogout = () => {
-    setSignedIn(false);
-    console.log("Logged out!");
-  };
+  const handleLogout = async () => {
+    fetch("/api/users/logout", { method: "GET", credentials: "same-origin" })
+    .then(() => {
+      setSignedIn(false);
+      setUserId(null);
+      setSessionOver(new Date());
+    })
+  }
 
   return (
     <Center as="nav" bg="brand.900" mb={5}>
@@ -119,16 +120,16 @@ export const Navigation = () => {
                           <MenuItem icon={<Settings />}>Settings</MenuItem>
                         </Link>
                         <MenuDivider />
-                        <MenuItem onClick={handleLogout} icon={<LogOut />}>
-                          Log Out
-                        </MenuItem>
+                        <MenuItem icon={<LogOut />} onClick={handleLogout}>Log Out</MenuItem>
                       </>
                     ) : (
                       <>
-                        <MenuItem onClick={handleLogIn} icon={<LogIn />}>
-                          Log In
-                        </MenuItem>
-                        <MenuItem icon={<UserPlus />}>Register</MenuItem>
+                        <Link to="/auth/login">
+                          <MenuItem icon={<LogIn />}>Log In</MenuItem>
+                        </Link>
+                        <Link to="/auth/register">
+                          <MenuItem icon={<UserPlus />}>Register</MenuItem>
+                        </Link>
                       </>
                     )}
                   </MenuList>
