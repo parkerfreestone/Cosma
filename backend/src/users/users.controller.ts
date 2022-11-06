@@ -39,7 +39,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async getUser(@Param('id') id: number) {
+  async getUser(@Param('id') id: string) {
     const user = await this.usersService.findOne({ id });
     delete user.password;
     return user;

@@ -43,7 +43,7 @@ export const Register = () => {
 
   const { mutate } = useMutation(createUser, {
     onSuccess: () => {
-      navigate("/login");
+      navigate("/auth/login");
     },
     onError: (err) => {
       setErrorMessage(err.response.data.message);
