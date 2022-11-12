@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
                 ((id) => {
                     if (id) {
-                        setUserId(parseInt(id, 10));
+                        setUserId(id);
                     }
                 })(localStorage.getItem('userId'));
             }

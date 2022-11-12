@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -33,14 +34,14 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/profile')
-  getProfile(@Req() req: any) {
-    return { username: req.user.username, id: req.user.sub };
-  }
-
   @Get(':id')
   async getUser(@Param('id') id: string) {
     const user = await this.usersService.findOne({ id });
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
     delete user.password;
     return user;
   }
