@@ -116,9 +116,6 @@ export const Navigation = () => {
                         <Link to="/profile">
                           <MenuItem icon={<User />}>Profile</MenuItem>
                         </Link>
-                        <Link to="/profile">
-                          <MenuItem icon={<Settings />}>Settings</MenuItem>
-                        </Link>
                         <MenuDivider />
                         <MenuItem icon={<LogOut />} onClick={handleLogout}>Log Out</MenuItem>
                       </>
