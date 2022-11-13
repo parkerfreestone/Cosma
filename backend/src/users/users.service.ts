@@ -46,6 +46,12 @@ export class UsersService {
     return user;
   }
 
+  async save(user: any) {
+    user.username = user.username.toLowerCase();
+    console.log(user);
+    return await this.usersRepo.save(user);
+  }
+
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
     return {

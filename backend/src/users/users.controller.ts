@@ -4,12 +4,15 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserCreationDto } from 'dto/users/user-create.dto';
+import { UserSaveDto } from 'dto/users/user-save.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { User } from 'src/entities/user.entity';
@@ -28,7 +31,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/logout')
-  async logout(@Res({passthrough: true}) res: any) {
+  async logout(@Res({ passthrough: true }) res: any) {
     res.clearCookie('jwt');
     return { message: 'User Successfully Logged out.' };
   }
@@ -51,6 +54,25 @@ export class UsersController {
     const user = await this.usersService.create(userCreationDto);
     delete user.password;
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/profile/:id')
+  async updateUser(@Param('id') id: string, @Body() userPayload: any) {
+    const user = await this.usersService.findOne({ id });
+
+    console.log(userPayload);
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    if (userPayload.bio) {
+      user.bio = userPayload.bio;
+    }
+
+    delete user.password;
+    return await this.usersService.save(user);
   }
 
   @UseGuards(LocalAuthGuard)
