@@ -1,18 +1,18 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { Post } from "./post.entity";
-import { User } from "./user.entity";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Post } from './post.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Comment {
-    @PrimaryColumn()
-    id: number;
+  @PrimaryColumn()
+  id: number;
 
-    @ManyToOne(() => User, (user) => user.comments)
-    user: User;
+  @ManyToOne(() => User, (user) => user.comments)
+  user: User;
 
-    @ManyToOne(() => Post, (post) => post.comments)
-    post: Post;
+  @OneToMany(() => Post, (post) => post.comments)
+  post: Post;
 
-    @Column({ nullable: false })
-    content: string;
+  @Column({ nullable: false })
+  content: string;
 }

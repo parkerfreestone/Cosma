@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../context/UserContext";
-import axios from "axios";
+import { NewPostModal } from "./NewPostModal";
 
 const menuItems = [
   {
@@ -36,7 +36,6 @@ const menuItems = [
   },
   {
     name: "New Post",
-    route: "/post",
     icon: <PlusSquare />,
   },
   {
@@ -49,99 +48,115 @@ const menuItems = [
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { signedIn, setSignedIn, setUserId, setSessionOver } = useAuthContext();
+  const [postModalIsOpen, setPostModalIsOpen] = useState(false);
 
   const handleLogout = async () => {
-    fetch("/api/users/logout", { method: "GET", credentials: "same-origin" })
-    .then(() => {
+    fetch("/api/users/logout", {
+      method: "GET",
+      credentials: "same-origin",
+    }).then(() => {
       setSignedIn(false);
       setUserId(null);
       setSessionOver(new Date());
-    })
-  }
+    });
+  };
 
   return (
-    <Center as="nav" bg="brand.900" mb={5}>
-      <Flex
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        w="100%"
-        paddingTop={7}
-        paddingBottom={7}
-        maxW="3xl"
-      >
-        <Link to="/">
-          <HStack>
-            <Rocket color="#e0aaff" size={32} />
-            <Text fontSize="2xl" color="white" fontWeight="bold">
-              COSMA
-            </Text>
-          </HStack>
-        </Link>
-        <Box
-          display={{ base: isOpen ? "block" : "none", md: "block" }}
-          flexBasis={{ base: "100%", md: "auto" }}
+    <>
+      <Center as="nav" bg="brand.900" mb={5}>
+        <Flex
+          align="center"
+          justify="space-between"
+          wrap="wrap"
+          w="100%"
+          paddingTop={7}
+          paddingBottom={7}
+          maxW="3xl"
         >
-          <Stack
-            spacing={8}
-            align="center"
-            justify={["center", "space-between", "flex-end", "flex-end"]}
-            direction={["column", "row", "row", "row"]}
-            pt={[4, 4, 0, 0]}
+          <Link to="/">
+            <HStack>
+              <Rocket color="#e0aaff" size={32} />
+              <Text fontSize="2xl" color="white" fontWeight="bold">
+                COSMA
+              </Text>
+            </HStack>
+          </Link>
+          <Box
+            display={{ base: isOpen ? "block" : "none", md: "block" }}
+            flexBasis={{ base: "100%", md: "auto" }}
           >
-            {menuItems.map(({ name, route, icon }) =>
-              name !== "Profile" ? (
-                <Link key={name} to={route}>
-                  <IconButton
+            <Stack
+              spacing={8}
+              align="center"
+              justify={["center", "space-between", "flex-end", "flex-end"]}
+              direction={["column", "row", "row", "row"]}
+              pt={[4, 4, 0, 0]}
+            >
+              <Link to={"/"}>
+                <IconButton
+                  variant="link"
+                  color="white"
+                  aria-label={"Compass"}
+                  icon={<Compass />}
+                />
+              </Link>
+
+              {/* KEEP THE LINK FOR STYLING */}
+              <Link to={""}>
+                <IconButton
+                  variant="link"
+                  color="white"
+                  aria-label={"Compass"}
+                  icon={<PlusSquare />}
+                  onClick={() => setPostModalIsOpen(true)}
+                />
+              </Link>
+
+              <Menu key={"profile-menu"}>
+                <Link>
+                  <MenuButton
+                    as={IconButton}
+                    aria-label={"profile-menu"}
                     variant="link"
                     color="white"
-                    aria-label={name}
-                    icon={icon}
+                    icon={<User />}
                   />
                 </Link>
-              ) : (
-                <Menu key={name}>
-                  <Link>
-                    <MenuButton
-                      as={IconButton}
-                      aria-label={name}
-                      variant="link"
-                      color="white"
-                      icon={icon}
-                    />
-                  </Link>
-                  <MenuList>
-                    {signedIn ? (
-                      <>
-                        <Link to="/profile">
-                          <MenuItem icon={<User />}>Profile</MenuItem>
-                        </Link>
-                        <MenuDivider />
-                        <MenuItem icon={<LogOut />} onClick={handleLogout}>Log Out</MenuItem>
-                      </>
-                    ) : (
-                      <>
-                        <Link to="/auth/login">
-                          <MenuItem icon={<LogIn />}>Log In</MenuItem>
-                        </Link>
-                        <Link to="/auth/register">
-                          <MenuItem icon={<UserPlus />}>Register</MenuItem>
-                        </Link>
-                      </>
-                    )}
-                  </MenuList>
-                </Menu>
-              )
-            )}
-          </Stack>
-          <Box
-            display={{ base: "block", md: "none" }}
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X /> : <Menu />}
+                <MenuList>
+                  {signedIn ? (
+                    <>
+                      <Link to="/profile">
+                        <MenuItem icon={<User />}>Profile</MenuItem>
+                      </Link>
+                      <MenuDivider />
+                      <MenuItem icon={<LogOut />} onClick={handleLogout}>
+                        Log Out
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/auth/login">
+                        <MenuItem icon={<LogIn />}>Log In</MenuItem>
+                      </Link>
+                      <Link to="/auth/register">
+                        <MenuItem icon={<UserPlus />}>Register</MenuItem>
+                      </Link>
+                    </>
+                  )}
+                </MenuList>
+              </Menu>
+            </Stack>
+            <Box
+              display={{ base: "block", md: "none" }}
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X /> : <Menu />}
+            </Box>
           </Box>
-        </Box>
-      </Flex>
-    </Center>
+        </Flex>
+      </Center>
+
+      <NewPostModal isOpen={postModalIsOpen} setIsOpen={setPostModalIsOpen} />
+    </>
   );
 };

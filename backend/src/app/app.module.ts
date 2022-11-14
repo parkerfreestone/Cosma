@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoreModule } from './core.module';
+import { PostsModule } from 'src/posts/posts.module';
 import { UsersModule } from 'src/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -23,6 +25,8 @@ import { AppService } from './app.service';
       inject: [ConfigService],
     }),
     UsersModule,
+    PostsModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

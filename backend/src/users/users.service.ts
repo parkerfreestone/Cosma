@@ -48,7 +48,6 @@ export class UsersService {
 
   async save(user: any) {
     user.username = user.username.toLowerCase();
-    console.log(user);
     return await this.usersRepo.save(user);
   }
 

@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Req,
   Res,
   UseGuards,
@@ -21,6 +20,33 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body()
+    userPayload: UserSaveDto,
+  ) {
+    const user = await this.usersService.findOne({ id });
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    user.bio = userPayload.bio || user.bio;
+
+    if (userPayload.username) {
+      user.username = userPayload.username;
+    }
+
+    if (userPayload.email) {
+      user.email = userPayload.email;
+    }
+
+    delete user.password;
+    return await this.usersService.save(user);
+  }
 
   @Get()
   async getUsers() {
@@ -54,25 +80,6 @@ export class UsersController {
     const user = await this.usersService.create(userCreationDto);
     delete user.password;
     return user;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Put('/profile/:id')
-  async updateUser(@Param('id') id: string, @Body() userPayload: any) {
-    const user = await this.usersService.findOne({ id });
-
-    console.log(userPayload);
-
-    if (!user) {
-      throw new BadRequestException();
-    }
-
-    if (userPayload.bio) {
-      user.bio = userPayload.bio;
-    }
-
-    delete user.password;
-    return await this.usersService.save(user);
   }
 
   @UseGuards(LocalAuthGuard)
