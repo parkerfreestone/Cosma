@@ -6,6 +6,7 @@ import {
   Button,
   Center,
   Divider,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -13,9 +14,12 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Link,
   Stack,
+  Text,
 } from "@chakra-ui/react";
-import { Mail, User } from "lucide-react";
+import { Link as RouterLink } from "react-router-dom";
+import { Lock, Mail, User } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +69,7 @@ export const Register = () => {
           mutate(formData);
         }}
       >
-        <Center>
+        <Flex direction="column" alignItems="center" justifyContent="center">
           <Box maxW="3xl" w="100%" borderWidth="1px" borderRadius="lg" p={6}>
             <Stack gap={2}>
               <Heading size="lg">Register</Heading>
@@ -116,6 +120,10 @@ export const Register = () => {
               <FormControl isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup size="lg">
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Lock color="gray" />}
+                  />
                   <Input
                     type={show.show1 ? "text" : "password"}
                     pr="4.5rem"
@@ -140,6 +148,10 @@ export const Register = () => {
               <FormControl isRequired>
                 <FormLabel>Confirm Password</FormLabel>
                 <InputGroup size="lg">
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Lock color="gray" />}
+                  />
                   <Input
                     type={show.show2 ? "text" : "password"}
                     pr="4.5rem"
@@ -173,7 +185,18 @@ export const Register = () => {
               </Button>
             </Stack>
           </Box>
-        </Center>
+          <Text marginTop={3}>
+            Already have an account?{" "}
+            <Link
+              as={RouterLink}
+              to="/auth/login"
+              color="purple.600"
+              fontWeight={900}
+            >
+              Log in
+            </Link>
+          </Text>
+        </Flex>
       </form>
     </>
   );

@@ -17,7 +17,7 @@ export class PostsService {
     return await this.postsRepo.find({ where: id });
   }
 
-  async create(postPayload: PostCreationDto, user: User) {
-    return await this.postsRepo.create({ ...postPayload, user });
+  create(postPayload: Post): Promise<Post> {
+    return this.postsRepo.save({ ...postPayload });
   }
 }

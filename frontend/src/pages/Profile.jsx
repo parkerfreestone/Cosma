@@ -16,6 +16,7 @@ import { Check, Cog, Edit, X } from "lucide-react";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { SettingsModal } from "../components/auth/SettingsModal";
 import { useAuthContext } from "../context/UserContext";
 
@@ -29,26 +30,27 @@ export const Profile = () => {
   const [settingsIsOpen, setSettingsIsOpen] = useState(false);
 
   const { userId } = useAuthContext();
+  const { id } = useParams();
 
   const toast = useToast();
 
   useEffect(() => {
-    if (userId) {
-      fetch(`/api/users/${userId}`, {
+    if (id) {
+      fetch(`/api/users/${id}`, {
         method: "GET",
       })
         .then((response) => response.json())
         .then((profileJsonPayload) => setUserData(profileJsonPayload))
         .catch(() => alert("There was an error fetching your profile..."));
     }
-  }, [userId]);
+  }, [id]);
 
   const handleEditUserProfile = (data) => {
     setEditingBio(false);
 
     data = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != ""));
 
-    fetch(`/api/users/${userId}`, {
+    fetch(`/api/users/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: {
@@ -86,43 +88,48 @@ export const Profile = () => {
               </Heading>
             </Stack>
           </Flex>
-          <HStack marginY={5}>
-            <Button
-              leftIcon={<Cog />}
-              size="sm"
-              onClick={() => setSettingsIsOpen(true)}
-            >
-              Settings
-            </Button>
-            <Button
-              leftIcon={!editingBio ? <Edit /> : <Check />}
-              size="sm"
-              onClick={() => {
-                !editingBio
-                  ? setEditingBio(!editingBio)
-                  : handleEditUserProfile(userData);
-              }}
-              colorScheme={!editingBio ? "gray" : "green"}
-            >
-              {!editingBio ? "Edit Bio" : "Save Changes"}
-            </Button>
-            {!editingBio ? null : (
+          {id === userId ? (
+            <HStack marginY={5}>
               <Button
-                colorScheme="red"
-                onClick={() => setEditingBio(!editingBio)}
-                leftIcon={<X />}
+                leftIcon={<Cog />}
                 size="sm"
+                onClick={() => setSettingsIsOpen(true)}
               >
-                Cancel
+                Settings
               </Button>
-            )}
-          </HStack>
+              <Button
+                leftIcon={!editingBio ? <Edit /> : <Check />}
+                size="sm"
+                onClick={() => {
+                  !editingBio
+                    ? setEditingBio(!editingBio)
+                    : handleEditUserProfile(userData);
+                }}
+                colorScheme={!editingBio ? "gray" : "green"}
+              >
+                {!editingBio ? "Edit Bio" : "Save Changes"}
+              </Button>
+              {!editingBio ? null : (
+                <Button
+                  colorScheme="red"
+                  onClick={() => setEditingBio(!editingBio)}
+                  leftIcon={<X />}
+                  size="sm"
+                >
+                  Cancel
+                </Button>
+              )}
+            </HStack>
+          ) : null}
           {userData.bio && !editingBio ? (
-            userData.bio
+            <Text>{userData.bio}</Text>
           ) : (
             <>
               {!editingBio ? (
-                <Text color={!userData.bio ? "gray.500" : "black"}>
+                <Text
+                  marginTop={2}
+                  color={!userData.bio ? "gray.500" : "black"}
+                >
                   Psst! It seems like you don't have a bio, you should make one.
                 </Text>
               ) : (

@@ -1,8 +1,11 @@
 import {
   Button,
+  Divider,
+  Flex,
   FormControl,
   FormLabel,
   HStack,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -12,7 +15,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  VStack,
 } from "@chakra-ui/react";
+import { Paintbrush, Paintbrush2, Settings2, User } from "lucide-react";
 import React, { useRef, useState } from "react";
 
 export const SettingsModal = ({
@@ -31,6 +36,7 @@ export const SettingsModal = ({
 
   return (
     <Modal
+      size="xl"
       isCentered
       initialFocusRef={initialRef}
       finalFocusRef={finalRef}
@@ -50,26 +56,45 @@ export const SettingsModal = ({
           }}
         >
           <ModalBody pb={6}>
-            <Stack gap={3}>
-              <FormControl>
-                <FormLabel>Change Username</FormLabel>
-                <Input
-                  value={newUserData.username}
-                  onChange={(e) =>
-                    setNewUserData({ ...newUserData, username: e.target.value })
-                  }
+            <HStack
+              alignItems="start"
+              justifyContent="space-between"
+              h="165px"
+              gap={2}
+            >
+              <VStack justifyContent="flex-start">
+                <IconButton colorScheme="brand" icon={<User />} />
+                <IconButton
+                  disabled
+                  colorScheme="brand"
+                  icon={<Paintbrush2 />}
                 />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Change Email</FormLabel>
-                <Input
-                  value={newUserData.email}
-                  onChange={(e) =>
-                    setNewUserData({ ...newUserData, email: e.target.value })
-                  }
-                />
-              </FormControl>
-            </Stack>
+              </VStack>
+              <Divider orientation="vertical" />
+              <Stack gap={3} flex={1}>
+                <FormControl>
+                  <FormLabel>Change Username</FormLabel>
+                  <Input
+                    value={newUserData.username}
+                    onChange={(e) =>
+                      setNewUserData({
+                        ...newUserData,
+                        username: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Change Email</FormLabel>
+                  <Input
+                    value={newUserData.email}
+                    onChange={(e) =>
+                      setNewUserData({ ...newUserData, email: e.target.value })
+                    }
+                  />
+                </FormControl>
+              </Stack>
+            </HStack>
           </ModalBody>
           <ModalFooter>
             <HStack>

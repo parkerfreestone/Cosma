@@ -3,11 +3,12 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
+  Param,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Post as PostEntity } from 'src/entities/post.entity';
 import { PostCreationDto } from 'dto/posts/post-create.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
@@ -34,7 +35,22 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  createPost(@Body() postPayload: PostCreationDto, @Req() req: any) {
-    return this.postsService.create(postPayload, req.user);
+  async createPost(@Body() postPayload: PostCreationDto, @Req() req: any) {
+    const user = await this.usersService.findOne({
+      username: req.user.username,
+    });
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    const newPost = new PostEntity();
+    newPost.content = postPayload.content;
+    newPost.user = user;
+
+    const result = await this.postsService.create(newPost);
+    delete result?.user;
+
+    return result;
   }
 }

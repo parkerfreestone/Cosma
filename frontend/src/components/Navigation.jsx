@@ -24,7 +24,7 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/UserContext";
 import { NewPostModal } from "./NewPostModal";
 
@@ -47,8 +47,11 @@ const menuItems = [
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { signedIn, setSignedIn, setUserId, setSessionOver } = useAuthContext();
+  const { signedIn, setSignedIn, setUserId, userId, setSessionOver } =
+    useAuthContext();
   const [postModalIsOpen, setPostModalIsOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     fetch("/api/users/logout", {
@@ -58,6 +61,7 @@ export const Navigation = () => {
       setSignedIn(false);
       setUserId(null);
       setSessionOver(new Date());
+      navigate("/auth/login");
     });
   };
 
@@ -81,10 +85,7 @@ export const Navigation = () => {
               </Text>
             </HStack>
           </Link>
-          <Box
-            display={{ base: isOpen ? "block" : "none", md: "block" }}
-            flexBasis={{ base: "100%", md: "auto" }}
-          >
+          <Box flexBasis={{ base: "100%", md: "auto" }}>
             <Stack
               spacing={8}
               align="center"
@@ -100,15 +101,20 @@ export const Navigation = () => {
                   icon={<Compass />}
                 />
               </Link>
-
               {/* KEEP THE LINK FOR STYLING */}
-              <Link to={""}>
+              <Link>
                 <IconButton
                   variant="link"
                   color="white"
                   aria-label={"Compass"}
                   icon={<PlusSquare />}
-                  onClick={() => setPostModalIsOpen(true)}
+                  onClick={() => {
+                    signedIn ? (
+                      setPostModalIsOpen(true)
+                    ) : (
+                      <Navigate to="/auth/login" replace />
+                    );
+                  }}
                 />
               </Link>
 
@@ -125,7 +131,7 @@ export const Navigation = () => {
                 <MenuList>
                   {signedIn ? (
                     <>
-                      <Link to="/profile">
+                      <Link to={`/profile/${userId}`}>
                         <MenuItem icon={<User />}>Profile</MenuItem>
                       </Link>
                       <MenuDivider />
@@ -146,10 +152,7 @@ export const Navigation = () => {
                 </MenuList>
               </Menu>
             </Stack>
-            <Box
-              display={{ base: "block", md: "none" }}
-              onClick={() => setIsOpen(!isOpen)}
-            >
+            <Box onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X /> : <Menu />}
             </Box>
           </Box>
