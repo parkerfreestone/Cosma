@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { PostCreationDto } from 'dto/posts/post-create.dto';
@@ -33,7 +34,7 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  createPost(@Body() postPayload: PostCreationDto) {
-    return this.postsService.create(postPayload);
+  createPost(@Body() postPayload: PostCreationDto, @Req() req: any) {
+    return this.postsService.create(postPayload, req.user);
   }
 }

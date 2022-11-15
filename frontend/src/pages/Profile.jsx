@@ -60,7 +60,7 @@ export const Profile = () => {
         description:
           res.status === 200
             ? "We've successfully updated your account."
-            : "There was a problem updating your account. It's likely that username or password is already taken.",
+            : "There was a problem updating your account. It's likely that username or email is already taken.",
         status: res.status === 200 ? "success" : "error",
         duration: 4000,
         isClosable: true,
@@ -104,7 +104,7 @@ export const Profile = () => {
               }}
               colorScheme={!editingBio ? "gray" : "green"}
             >
-              {!editingBio ? "Edit Bio" : "Save these changes."}
+              {!editingBio ? "Edit Bio" : "Save Changes"}
             </Button>
             {!editingBio ? null : (
               <Button

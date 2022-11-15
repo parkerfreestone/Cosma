@@ -16,27 +16,25 @@ import {
 } from "@chakra-ui/react";
 import { Share } from "lucide-react";
 import React, { useState } from "react";
-import { useAuthContext } from "../context/UserContext";
 
 export const NewPostModal = ({ isOpen, setIsOpen }) => {
   const [postContent, setPostContent] = useState("");
 
-  const { userId } = useAuthContext();
   const toast = useToast();
 
   const handleSubmit = async () => {
     fetch("/api/posts", {
       method: "POST",
-      body: JSON.stringify({ userId: "4", content: "GOd is good" }),
-      "Content-Type": "application/json",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: postContent }),
     }).then((res) => {
       toast({
-        title: res.status === 200 ? "Nice!" : "Uh oh...",
+        title: res.status == 200 ? "Nice!" : "Uh oh...",
         description:
-          res.status === 200
+          res.status == 200
             ? "Super poggers, maybe this post will go viral 😎"
             : "There was a problem submitting your post. Try again later.",
-        status: res.status === 200 ? "success" : "error",
+        status: res.status == 200 ? "success" : "error",
         duration: 4000,
         isClosable: true,
       });
