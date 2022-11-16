@@ -13,8 +13,14 @@ export class PostsService {
     return await this.postsRepo.findOne({ where: options });
   }
 
-  async findAllForUser(id: Record<string, any>): Promise<Post[]> {
-    return await this.postsRepo.find({ where: id });
+  async findAllForUser(user: User): Promise<Post[]> {
+    return await this.postsRepo.find({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
   }
 
   create(postPayload: Post): Promise<Post> {

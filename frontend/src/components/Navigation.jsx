@@ -12,6 +12,7 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
+  Link,
 } from "@chakra-ui/react";
 import {
   Compass,
@@ -24,7 +25,7 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/UserContext";
 import { NewPostModal } from "./NewPostModal";
 
@@ -77,7 +78,7 @@ export const Navigation = () => {
           paddingBottom={7}
           maxW="3xl"
         >
-          <Link to="/">
+          <Link as={RouterLink} to="/">
             <HStack>
               <Rocket color="#e0aaff" size={32} />
               <Text fontSize="2xl" color="white" fontWeight="bold">
@@ -93,7 +94,7 @@ export const Navigation = () => {
               direction={["column", "row", "row", "row"]}
               pt={[4, 4, 0, 0]}
             >
-              <Link to={"/"}>
+              <Link as={RouterLink} to={"/"}>
                 <IconButton
                   variant="link"
                   color="white"
@@ -102,7 +103,7 @@ export const Navigation = () => {
                 />
               </Link>
               {/* KEEP THE LINK FOR STYLING */}
-              <Link>
+              <Link as={RouterLink}>
                 <IconButton
                   variant="link"
                   color="white"
@@ -119,7 +120,7 @@ export const Navigation = () => {
               </Link>
 
               <Menu key={"profile-menu"}>
-                <Link>
+                <Link as={RouterLink}>
                   <MenuButton
                     as={IconButton}
                     aria-label={"profile-menu"}
@@ -131,7 +132,7 @@ export const Navigation = () => {
                 <MenuList>
                   {signedIn ? (
                     <>
-                      <Link to={`/profile/${userId}`}>
+                      <Link as={RouterLink} to={`/profile/${userId}`}>
                         <MenuItem icon={<User />}>Profile</MenuItem>
                       </Link>
                       <MenuDivider />
@@ -141,10 +142,10 @@ export const Navigation = () => {
                     </>
                   ) : (
                     <>
-                      <Link to="/auth/login">
+                      <Link as={RouterLink} to="/auth/login">
                         <MenuItem icon={<LogIn />}>Log In</MenuItem>
                       </Link>
-                      <Link to="/auth/register">
+                      <Link as={RouterLink} to="/auth/register">
                         <MenuItem icon={<UserPlus />}>Register</MenuItem>
                       </Link>
                     </>

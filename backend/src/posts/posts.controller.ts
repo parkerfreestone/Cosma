@@ -30,7 +30,7 @@ export class PostsController {
       throw new BadRequestException();
     }
 
-    return await this.postsService.findAllForUser({ userId: user.id });
+    return this.postsService.findAllForUser(user);
   }
 
   @UseGuards(JwtAuthGuard)
