@@ -15,10 +15,24 @@ export class PostsService {
 
   async findAllForUser(user: User): Promise<Post[]> {
     return await this.postsRepo.find({
+      select: {
+        id: true,
+        content: true,
+        comments: true,
+        createdDate: true,
+        modifiedDate: true,
+        user: {
+          id: true,
+          username: true,
+        },
+      },
       where: {
         user: {
           id: user.id,
         },
+      },
+      relations: {
+        user: true,
       },
     });
   }

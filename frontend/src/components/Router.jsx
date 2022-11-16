@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Register } from "../pages/auth/Register";
 import { Explore } from "../pages/Explore";
 import { Navigation } from "./Navigation";
@@ -37,11 +37,12 @@ export const Router = () => {
   );
 };
 
+// THIS IS SO HACKY WTF
 const ProtectedRoute = ({ children }) => {
   const { signedIn } = useAuthContext();
 
   if (!signedIn) {
-    return <Navigate to="/auth/login" replace />;
+    return <Login />;
   }
 
   return children;

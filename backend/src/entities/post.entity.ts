@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Comment } from './comment.entity';
@@ -21,4 +23,10 @@ export class Post {
 
   @Column({ nullable: false })
   content: string;
+
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @UpdateDateColumn()
+  modifiedDate: Date;
 }

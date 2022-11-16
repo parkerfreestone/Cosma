@@ -8,6 +8,11 @@ import {
   Heading,
   HStack,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   Textarea,
   useToast,
@@ -18,20 +23,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { SettingsModal } from "../components/auth/SettingsModal";
+import { PostCard } from "../components/profile/PostCard";
 import { useAuthContext } from "../context/UserContext";
-
-const getUserProfile = (id) => {
-  return fetch(`/api/users/${id}`, {
-    method: "GET",
-  }).then((userJsonCollection) => userJsonCollection.json());
-};
-
-const getUserPosts = (id) => {
-  return fetch(`/api/posts/${id}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((postJsonCollection) => postJsonCollection.json());
-};
 
 export const Profile = () => {
   const [userData, setUserData] = useState({});
@@ -45,14 +38,22 @@ export const Profile = () => {
   const toast = useToast();
 
   useEffect(() => {
-    getUserProfile(id)
-      .then((userProfileData) => setUserData(userProfileData))
-      .then(() =>
-        getUserPosts(id).then((userPostData) => {
-          setPostData([...postData, { ...userPostData[0] }]);
-        })
-      );
-  }, []);
+    if (id) {
+      fetch(`/api/users/${id}`, {
+        method: "GET",
+      })
+        .then((userJsonCollection) => userJsonCollection.json())
+        .then((res) => setUserData(res));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetch(`/api/posts/${id}`, {
+      method: "GET",
+    })
+      .then((postJsonCollection) => postJsonCollection.json())
+      .then((res) => setPostData(res));
+  }, [id]);
 
   const handleEditUserProfile = (data) => {
     setEditingBio(false);
@@ -80,94 +81,103 @@ export const Profile = () => {
   };
 
   return (
-    <>
-      <Center>
-        <Box maxW="3xl" w="100%" borderWidth="1px" borderRadius="lg" p={6}>
-          <Flex alignItems="center" justifyContent="start">
-            <Avatar
-              size="xl"
-              colorScheme="brand"
-              marginEnd={6}
-              name={userData?.username}
-            />
-            <Stack marginBottom={5}>
-              <Heading size="lg">{userData?.username}</Heading>
-              <Heading size="sm" color="gray.600">
-                Joined {new Date(userData?.createdDate).toDateString()}
-              </Heading>
-            </Stack>
-          </Flex>
-          {id === userId ? (
-            <HStack marginY={5}>
+    <Flex direction="column" alignItems="center">
+      <Box maxW="3xl" w="100%" borderWidth="1px" borderRadius="lg" p={6}>
+        <Flex alignItems="center" justifyContent="start">
+          <Avatar
+            size="xl"
+            colorScheme="brand"
+            marginEnd={6}
+            name={userData?.username}
+          />
+          <Stack marginBottom={5}>
+            <Heading size="lg">{userData?.username}</Heading>
+            <Heading size="sm" color="gray.600" style={{ marginTop: 0 }}>
+              Joined {new Date(userData?.createdDate).toLocaleDateString()}
+            </Heading>
+          </Stack>
+        </Flex>
+        {id === userId ? (
+          <HStack marginY={5}>
+            <Button
+              leftIcon={<Cog />}
+              size="sm"
+              onClick={() => setSettingsIsOpen(true)}
+            >
+              Settings
+            </Button>
+            <Button
+              leftIcon={!editingBio ? <Edit /> : <Check />}
+              size="sm"
+              onClick={() => {
+                !editingBio
+                  ? setEditingBio(!editingBio)
+                  : handleEditUserProfile(userData && "");
+              }}
+              colorScheme={!editingBio ? "gray" : "green"}
+            >
+              {!editingBio ? "Edit Bio" : "Save Changes"}
+            </Button>
+            {!editingBio ? null : (
               <Button
-                leftIcon={<Cog />}
+                colorScheme="red"
+                onClick={() => setEditingBio(!editingBio)}
+                leftIcon={<X />}
                 size="sm"
-                onClick={() => setSettingsIsOpen(true)}
               >
-                Settings
+                Cancel
               </Button>
-              <Button
-                leftIcon={!editingBio ? <Edit /> : <Check />}
-                size="sm"
-                onClick={() => {
-                  !editingBio
-                    ? setEditingBio(!editingBio)
-                    : handleEditUserProfile(userData && "");
-                }}
-                colorScheme={!editingBio ? "gray" : "green"}
-              >
-                {!editingBio ? "Edit Bio" : "Save Changes"}
-              </Button>
-              {!editingBio ? null : (
-                <Button
-                  colorScheme="red"
-                  onClick={() => setEditingBio(!editingBio)}
-                  leftIcon={<X />}
-                  size="sm"
-                >
-                  Cancel
-                </Button>
-              )}
-            </HStack>
-          ) : null}
-          {userData?.bio && !editingBio ? (
-            <Text>{userData.bio}</Text>
-          ) : (
-            <>
-              {!editingBio ? (
-                <Text
-                  marginTop={2}
-                  color={!userData?.bio ? "gray.500" : "black"}
-                >
-                  Psst! It seems like you don't have a bio, you should make one.
-                </Text>
-              ) : (
-                <Textarea
-                  resize={"none"}
-                  value={userData?.bio || ""}
-                  onChange={(e) =>
-                    setUserData((existingValues) => ({
-                      ...existingValues,
-                      bio: e.target.value,
-                    }))
-                  }
+            )}
+          </HStack>
+        ) : null}
+        {userData?.bio && !editingBio ? (
+          <Text>{userData.bio}</Text>
+        ) : (
+          <>
+            {!editingBio ? (
+              <Text marginTop={2} color={!userData?.bio ? "gray.500" : "black"}>
+                Psst! It seems like you don't have a bio, you should make one.
+              </Text>
+            ) : (
+              <Textarea
+                resize={"none"}
+                value={userData?.bio || ""}
+                onChange={(e) =>
+                  setUserData((existingValues) => ({
+                    ...existingValues,
+                    bio: e.target.value,
+                  }))
+                }
+              />
+            )}
+          </>
+        )}
+      </Box>
+      <Box maxW="3xl" w="100%" mt={5}>
+        <Tabs variant="soft-rounded" colorScheme="purple">
+          <TabList>
+            <Tab>Posts</Tab>
+            <Tab isDisabled>Tagged</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel px={0}>
+              {postData.map(({ user, content, createdDate }) => (
+                <PostCard
+                  user={user.username}
+                  content={content}
+                  createdDate={createdDate}
                 />
-              )}
-            </>
-          )}
-        </Box>
-        {/* TODO: ADD USERS POSTS HERE (WITH SOME STYLISH CARDS) */}
-        {postData.map(({ content }) => (
-          <Text>{content}</Text>
-        ))}
-      </Center>
-
+              ))}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Box>
       <SettingsModal
         isOpen={settingsIsOpen}
         setIsOpen={setSettingsIsOpen}
         setUserData={setUserData}
         onSubmit={handleEditUserProfile}
       />
-    </>
+    </Flex>
   );
 };

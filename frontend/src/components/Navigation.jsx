@@ -13,14 +13,15 @@ import {
   MenuItem,
   MenuDivider,
   Link,
+  Button,
 } from "@chakra-ui/react";
 import {
+  ChevronDown,
   Compass,
   LogIn,
   LogOut,
   PlusSquare,
   Rocket,
-  Settings,
   User,
   UserPlus,
   X,
@@ -28,23 +29,6 @@ import {
 import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/UserContext";
 import { NewPostModal } from "./NewPostModal";
-
-const menuItems = [
-  {
-    name: "Explore",
-    route: "/",
-    icon: <Compass />,
-  },
-  {
-    name: "New Post",
-    icon: <PlusSquare />,
-  },
-  {
-    name: "Profile",
-    route: "/profile",
-    icon: <User />,
-  },
-];
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +44,7 @@ export const Navigation = () => {
       credentials: "same-origin",
     }).then(() => {
       setSignedIn(false);
-      setUserId(null);
+      setUserId("");
       setSessionOver(new Date());
       navigate("/auth/login");
     });
@@ -102,7 +86,7 @@ export const Navigation = () => {
                   icon={<Compass />}
                 />
               </Link>
-              {/* KEEP THE LINK FOR STYLING */}
+
               <Link as={RouterLink}>
                 <IconButton
                   variant="link"
@@ -153,9 +137,6 @@ export const Navigation = () => {
                 </MenuList>
               </Menu>
             </Stack>
-            <Box onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <X /> : <Menu />}
-            </Box>
           </Box>
         </Flex>
       </Center>
