@@ -134,21 +134,23 @@ export const Profile = () => {
           <Text>{userData.bio}</Text>
         ) : (
           <>
-            {!editingBio ? (
+            {!editingBio && userId === id ? (
               <Text marginTop={2} color={!userData?.bio ? "gray.500" : "black"}>
                 Psst! It seems like you don't have a bio, you should make one.
               </Text>
             ) : (
-              <Textarea
-                resize={"none"}
-                value={userData?.bio || ""}
-                onChange={(e) =>
-                  setUserData((existingValues) => ({
-                    ...existingValues,
-                    bio: e.target.value,
-                  }))
-                }
-              />
+              userId === id && (
+                <Textarea
+                  resize={"none"}
+                  value={userData?.bio || ""}
+                  onChange={(e) =>
+                    setUserData((existingValues) => ({
+                      ...existingValues,
+                      bio: e.target.value,
+                    }))
+                  }
+                />
+              )
             )}
           </>
         )}
@@ -158,12 +160,14 @@ export const Profile = () => {
           <TabList>
             <Tab>Posts</Tab>
             <Tab isDisabled>Tagged</Tab>
+            <Tab isDisabled>Liked</Tab>
           </TabList>
           <TabPanels>
             <TabPanel px={0}>
               {postData.map(({ user, content, createdDate }) => (
                 <PostCard
-                  user={user.username}
+                  key={user.id}
+                  user={user}
                   content={content}
                   createdDate={createdDate}
                 />
