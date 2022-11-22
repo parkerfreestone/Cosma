@@ -14,6 +14,7 @@ import { UserCreationDto } from 'dto/users/user-create.dto';
 import { UserSaveDto } from 'dto/users/user-save.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { UserFollowers } from 'src/entities/user-followers.entity';
 import { User } from 'src/entities/user.entity';
 import { UsersService } from './users.service';
 
@@ -53,6 +54,28 @@ export class UsersController {
     return (await this.usersService.findAll()).map(
       ({ password, ...rest }) => rest,
     );
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/followers')
+  async followUser(@Req() req: any, @Param('id') id: string) {
+    const follower = await this.usersService.findOne({
+      username: req.user.username,
+    });
+    const followee = await this.usersService.findOne({ id });
+
+    if (!follower || !followee) {
+      throw new BadRequestException(
+        'One or both of the followers do not exist!',
+      );
+    }
+
+    if (follower === followee) {
+      throw new BadRequestException('Hmmm, you cannot follow yourself!');
+    }
+    const userFollowerRelation = new UserFollowers();
+
+    userFollowerRelation.followee = followee;
+    userFollowerRelation.follower = follower;
   }
 
   @UseGuards(JwtAuthGuard)

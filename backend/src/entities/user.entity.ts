@@ -4,11 +4,13 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Post } from './post.entity';
 import { Comment } from './comment.entity';
+import { UserFollowers } from './user-followers.entity';
 
 @Entity()
 export class User {
@@ -27,9 +29,11 @@ export class User {
   @Column({ nullable: true })
   bio: string;
 
-  @ManyToMany(() => User)
-  @JoinTable()
-  followers: User[];
+  @OneToMany(() => UserFollowers, (follower) => follower.follower)
+  followers: UserFollowers[];
+
+  @OneToMany(() => UserFollowers, (followee) => followee.followee)
+  followees: UserFollowers[];
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

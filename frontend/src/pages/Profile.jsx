@@ -17,11 +17,11 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { Check, Cog, Edit, X } from "lucide-react";
+import { Check, Cog, Edit, UserPlus, X } from "lucide-react";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SettingsModal } from "../components/auth/SettingsModal";
 import { PostCard } from "../components/profile/PostCard";
 import { useAuthContext } from "../context/UserContext";
@@ -36,6 +36,8 @@ export const Profile = () => {
   const { id } = useParams();
 
   const toast = useToast();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -77,6 +79,25 @@ export const Profile = () => {
         duration: 4000,
         isClosable: true,
       });
+      navigate(0);
+    });
+  };
+
+  const handleFollowRequest = () => {
+    fetch(`/api/users/${id}/followers`, {
+      method: "POST",
+    }).then((res) => {
+      toast({
+        title: res.status === 200 ? "Follow Success." : "Uh oh...",
+        description:
+          res.status === 200
+            ? "Hmm, hopefully something good comes of this!"
+            : "There was a problem following this user. Try again later.",
+        status: res.status === 200 ? "success" : "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      navigate(0);
     });
   };
 
@@ -90,12 +111,18 @@ export const Profile = () => {
             marginEnd={6}
             name={userData?.username}
           />
-          <Stack marginBottom={5}>
-            <Heading size="lg">{userData?.username}</Heading>
-            <Heading size="sm" color="gray.600" style={{ marginTop: 0 }}>
-              Joined {new Date(userData?.createdDate).toLocaleDateString()}
-            </Heading>
-          </Stack>
+          <Flex>
+            <Stack marginBottom={5}>
+              <Heading size="lg">{userData?.username}</Heading>
+              <Heading size="sm" color="gray.600" style={{ marginTop: 0 }}>
+                Joined {new Date(userData?.createdDate).toLocaleDateString()}
+              </Heading>
+            </Stack>
+            {/* <HStack>
+              <Heading size="lg">{userData?.following.length}</Heading>
+              <Heading size="lg">{userData?.follower.length}</Heading>
+            </HStack> */}
+          </Flex>
         </Flex>
         {id === userId ? (
           <HStack marginY={5}>
@@ -129,7 +156,17 @@ export const Profile = () => {
               </Button>
             )}
           </HStack>
-        ) : null}
+        ) : (
+          <Button
+            size="md"
+            colorScheme="brand"
+            leftIcon={<UserPlus />}
+            my={5}
+            onClick={handleFollowRequest}
+          >
+            Follow User
+          </Button>
+        )}
         {userData?.bio && !editingBio ? (
           <Text>{userData.bio}</Text>
         ) : (
@@ -164,14 +201,16 @@ export const Profile = () => {
           </TabList>
           <TabPanels>
             <TabPanel px={0}>
-              {postData.map(({ user, content, createdDate }) => (
-                <PostCard
-                  key={user.id}
-                  user={user}
-                  content={content}
-                  createdDate={createdDate}
-                />
-              ))}
+              <Stack gap={2}>
+                {postData.map(({ user, content, createdDate }) => (
+                  <PostCard
+                    key={user.id}
+                    user={user}
+                    content={content}
+                    createdDate={createdDate}
+                  />
+                ))}
+              </Stack>
             </TabPanel>
           </TabPanels>
         </Tabs>

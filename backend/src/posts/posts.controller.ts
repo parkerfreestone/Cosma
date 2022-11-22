@@ -7,6 +7,7 @@ import {
   Param,
   Req,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Post as PostEntity } from 'src/entities/post.entity';
 import { PostCreationDto } from 'dto/posts/post-create.dto';
@@ -42,6 +43,12 @@ export class PostsController {
 
     if (!user) {
       throw new BadRequestException();
+    }
+
+    if (req.user.username !== user.username) {
+      throw new UnauthorizedException(
+        'You cannot post on behalf of another user!',
+      );
     }
 
     const newPost = new PostEntity();

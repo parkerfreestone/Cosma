@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { ArrowRight, Share } from "lucide-react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/UserContext";
 
 export const NewPostModal = ({ isOpen, setIsOpen }) => {
@@ -25,6 +25,8 @@ export const NewPostModal = ({ isOpen, setIsOpen }) => {
   const { signedIn } = useAuthContext();
 
   const toast = useToast();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     fetch("/api/posts", {
@@ -43,6 +45,7 @@ export const NewPostModal = ({ isOpen, setIsOpen }) => {
         isClosable: true,
       });
       setIsOpen(false);
+      navigate(0);
     });
   };
 
