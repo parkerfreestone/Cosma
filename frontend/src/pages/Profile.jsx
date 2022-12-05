@@ -2,9 +2,7 @@ import {
   Avatar,
   Box,
   Button,
-  Center,
   Flex,
-  FormControl,
   Heading,
   HStack,
   Stack,
@@ -62,6 +60,7 @@ export const Profile = () => {
 
     data = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != ""));
 
+    console.log(data);
     fetch(`/api/users/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -75,24 +74,6 @@ export const Profile = () => {
           res.status === 200
             ? "We've successfully updated your account."
             : "There was a problem updating your account. It's likely that username or email is already taken.",
-        status: res.status === 200 ? "success" : "error",
-        duration: 4000,
-        isClosable: true,
-      });
-      navigate(0);
-    });
-  };
-
-  const handleFollowRequest = () => {
-    fetch(`/api/users/${id}/followers`, {
-      method: "POST",
-    }).then((res) => {
-      toast({
-        title: res.status === 200 ? "Follow Success." : "Uh oh...",
-        description:
-          res.status === 200
-            ? "Hmm, hopefully something good comes of this!"
-            : "There was a problem following this user. Try again later.",
         status: res.status === 200 ? "success" : "error",
         duration: 4000,
         isClosable: true,
@@ -118,13 +99,9 @@ export const Profile = () => {
                 Joined {new Date(userData?.createdDate).toLocaleDateString()}
               </Heading>
             </Stack>
-            {/* <HStack>
-              <Heading size="lg">{userData?.following.length}</Heading>
-              <Heading size="lg">{userData?.follower.length}</Heading>
-            </HStack> */}
           </Flex>
         </Flex>
-        {id === userId ? (
+        {userId === userData.id ? (
           <HStack marginY={5}>
             <Button
               leftIcon={<Cog />}
@@ -139,7 +116,7 @@ export const Profile = () => {
               onClick={() => {
                 !editingBio
                   ? setEditingBio(!editingBio)
-                  : handleEditUserProfile(userData && "");
+                  : handleEditUserProfile(userData);
               }}
               colorScheme={!editingBio ? "gray" : "green"}
             >
@@ -156,17 +133,8 @@ export const Profile = () => {
               </Button>
             )}
           </HStack>
-        ) : (
-          <Button
-            size="md"
-            colorScheme="brand"
-            leftIcon={<UserPlus />}
-            my={5}
-            onClick={handleFollowRequest}
-          >
-            Follow User
-          </Button>
-        )}
+        ) : null}
+
         {userData?.bio && !editingBio ? (
           <Text>{userData.bio}</Text>
         ) : (

@@ -1,51 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
-  Center,
-  Divider,
+  Heading,
   HStack,
   Stack,
+  Avatar,
   Text,
+  Center,
+  Link,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 export const Explore = () => {
+  const [usersList, setUsersList] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/users", { method: "GET" })
+      .then((usersJsonPayload) => usersJsonPayload.json())
+      .then((users) => setUsersList(users));
+  }, []);
+
   return (
     <Center>
-      <Box
-        maxW="3xl"
-        p={7}
-        borderWidth="1px"
-        borderRadius="lg"
-        overflow="hidden"
-      >
-        <Stack>
-          <Text fontSize="4xl" fontWeight="bold">
-            Howdy!
-          </Text>
-          <Text>
-            This is a little awkward, but you must have an account to see posts.
-            Luckily we've made the process easy.
-          </Text>
-          <Divider />
-          <HStack paddingTop={3}>
-            <Button variant="solid" colorScheme="brand">
-              Sign In
-            </Button>
-            <Link to="/auth/register">
+      <Stack maxW="3xl" width="100%">
+        {usersList.map(({ id, username, createdDate }) => (
+          <Box
+            p={7}
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+            w="100%"
+            key={id}
+          >
+            <HStack>
+              <Avatar size="md" colorScheme="brand" name={username} />
+              <Stack>
+                <Heading size="md">{username}</Heading>
+                <Text color="gray.500" style={{ marginTop: 0 }}>
+                  Joined {new Date(createdDate).toLocaleDateString()}
+                </Text>
+              </Stack>
+            </HStack>
+            <Link as={RouterLink} to={`/profile/${id}`}>
               <Button
-                variant="ghost"
                 rightIcon={<ArrowRight />}
-                colorScheme="brand"
+                size="sm"
+                marginTop={2}
+                variant="ghost"
               >
-                Register
+                View Profile
               </Button>
             </Link>
-          </HStack>
-        </Stack>
-      </Box>
+          </Box>
+        ))}
+      </Stack>
     </Center>
   );
 };

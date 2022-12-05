@@ -2,15 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Post } from './post.entity';
 import { Comment } from './comment.entity';
-import { UserFollowers } from './user-followers.entity';
 
 @Entity()
 export class User {
@@ -29,16 +25,10 @@ export class User {
   @Column({ nullable: true })
   bio: string;
 
-  @OneToMany(() => UserFollowers, (follower) => follower.follower)
-  followers: UserFollowers[];
-
-  @OneToMany(() => UserFollowers, (followee) => followee.followee)
-  followees: UserFollowers[];
-
-  @OneToMany(() => Post, (post) => post.user)
+  @OneToMany(() => Post, (post) => post.user, { onDelete: 'CASCADE' })
   posts: Post[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { onDelete: 'CASCADE' })
   comments: Comment[];
 
   @CreateDateColumn()

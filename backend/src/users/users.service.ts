@@ -5,14 +5,11 @@ import { User } from 'src/entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserFollowers } from 'src/entities/user-followers.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepo: Repository<User>,
-    @InjectRepository(UserFollowers)
-    private userFollowersRepo: Repository<UserFollowers>,
     private jwtService: JwtService,
   ) {}
 
@@ -22,10 +19,6 @@ export class UsersService {
 
   findOne(options: Record<string, any>): Promise<User> {
     return this.usersRepo.findOne({ where: options });
-  }
-
-  findUserFollower(options: Record<string, any>): Promise<UserFollowers> {
-    return this.userFollowersRepo.findOne({ where: options });
   }
 
   async remove(id: string): Promise<DeleteResult> {
