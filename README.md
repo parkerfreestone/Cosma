@@ -10,7 +10,7 @@ Clone the repo into a directory of choice...
 ### 📬 2: Install dependencies &  Configure .env
 Run `npm i && cd frontend && npm i && cd ../backend && npm i`
 
-Clone the `.env.example` file and name it `.env.` Then configure it to your liking!
+Clone the `.env.example` file and name it `.env` Then configure it to your liking!
 
 ### 👩🏿‍💻 3: Create DB
 Cosma uses postgresql by default so get a DB up and running. Ensure the name of your db matches your .env
