@@ -2,7 +2,7 @@
 
 COSMA is a completely original, never conceived social media app where users can share what's really on their mind. Heavily inspired by current, yet inferior apps like twitter, and TRUTH Social. Mainly characterized by it's lovely UI and lack of features :(...
 
-## A: Up and Running
+## > Up and Running
 
 ### 🎅 1: Clone & Be Merry
 Clone the repo into a directory of choice...
